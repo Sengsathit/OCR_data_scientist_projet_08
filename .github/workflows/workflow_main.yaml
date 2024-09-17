@@ -1,0 +1,50 @@
+name: Check unit tests then deploy API and Dashboard
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up Python version
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.10'
+
+      - name: Create and start virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Deploy API and Dashboard
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.OCR_SSH_PRIVATE_KEY  }}
+          host: ${{ secrets.OCR_SSH_HOST  }}
+          username: ${{ secrets.OCR_USER_NAME  }}
+          script: |
+            rm -rf /home/ubuntu/OCR_data_scientist_projet_08
+            git clone https://github.com/Sengsathit/OCR_data_scientist_projet_08.git
+
+            cd /home/ubuntu/OCR_data_scientist_projet_08/datasets
+            unzip df_train_domain.csv.zip
+            rm df_train_domain.csv.zip
+
+            cd /home/ubuntu/OCR_data_scientist_projet_08
+            python3 -m venv .venv
+            source .venv/bin/activate
+            pip install -r requirements.txt
+
+            chmod +x /home/ubuntu/OCR_data_scientist_projet_08/scripts/run_dashboard.sh
+            /home/ubuntu/OCR_data_scientist_projet_08/scripts/run_dashboard.sh
