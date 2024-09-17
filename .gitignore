@@ -2,14 +2,12 @@
 
 __pycache__/
 
-*/datasets/df_train_domain.csv
-
 **/venv/
 **/env/
 **/.venv/
-*.csv
 *.db
 *.sqlite
-
 cours/
 test/
+
+datasets/df_train_domain.csv

@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Deploy API and Dashboard
+      - name: Deploy dashboard
         uses: appleboy/ssh-action@master
         with:
           key: ${{ secrets.OCR_SSH_PRIVATE_KEY  }}
