@@ -1,8 +1,33 @@
 import pandas as pd
 import requests
 import streamlit as st
-from utils.functions import load_dataset, display_banner, display_gauge, show_error_message, show_info_message, show_feature_importances
+from utils.functions import *
 from utils.constants import *
+
+# FUNCTIONS -----------------------------------------------------------------------------------------------------------------------------
+
+# Affichage de l'interface en fonction des données récupérées
+def display_home_page_content(data):
+    if data:
+        client_id = data['sk_id_curr']
+        threshold = round(data['threshold'] * 100, 2)
+        probability = round(data['probability'] * 100, 2)
+
+        # Vérifier le dépassement du seuil de probabilité
+        is_credit_default = probability > threshold
+
+        # Affichage du score du client
+        display_gauge(client_id=client_id, value=probability, range_limit=threshold)
+
+        if is_credit_default:
+            show_error_message(message='Client à risque')
+        else:
+            show_info_message(message='Client éligible pour un crédit')
+
+        # Explication des features
+        show_feature_importances(df=data)
+
+# END_FUNCTIONS -------------------------------------------------------------------------------------------------------------------------
 
 # Configuration de la page
 st.set_page_config(layout='centered')
@@ -10,22 +35,17 @@ st.set_page_config(layout='centered')
 # Affichage de l'en-tête de la page
 display_banner(title='Évaluation du risque de crédit')
 
-# Chargement du dataset
-load_dataset()
-
-# Initialiser le state si ce n'est pas déjà fait
-if 'data' not in st.session_state:
-    st.session_state['data'] = None
+state_data = get_state_data()
 
 # Champ de saisie pour le numéro de client
 client_id = st.text_input(
     "Saisir le numéro de client (ex : 100002, 100040)", 
-    st.session_state['data'].get('sk_id_curr') if st.session_state.get('data') else ""
+    state_data['sk_id_curr'] if state_data else ""
 )
 
 # Bouton pour soumettre le numéro de client
 if st.button("Vérifier le risque"):
-    st.session_state['data'] = None
+    st.session_state['client_data'] = None
     if client_id:
         # Valeur de l'ID à envoyer à l'API
         payload = {"sk_id_curr": int(client_id)}
@@ -38,7 +58,8 @@ if st.button("Vérifier le risque"):
                 response_data = response.json()
 
                 # Sauvegarder les données dans session_state
-                st.session_state['data'] = response_data
+                st.session_state['client_data'] = response_data
+                state_data = st.session_state['client_data']
 
             elif response.status_code == 400:
                 response_data = response.json()
@@ -51,26 +72,6 @@ if st.button("Vérifier le risque"):
     else:
         st.warning("Veuillez saisir un numéro de client.")
 
-# Affichage de l'interface en fonction des données récupérées
-def display_home_page_content(data):
-    if data:
-        threshold = round(data['threshold'] * 100, 2)
-        probability = round(data['probability'] * 100, 2)
-
-        # Vérifier le dépassement du seuil de probabilité
-        is_credit_default = probability > threshold
-
-        # Affichage du score du client
-        display_gauge(value=probability, range_limit=threshold)
-
-        if is_credit_default:
-            show_error_message(message='Client à risque')
-        else:
-            show_info_message(message='Client éligible pour un crédit')
-
-        # Explication des features
-        show_feature_importances(df=data)
-
 # Appeler la fonction d'affichage si des données sont présentes
-if st.session_state['data']:
-    display_home_page_content(st.session_state['data'])
+if state_data:
+    display_home_page_content(data=state_data)

@@ -12,3 +12,6 @@ image_url = "https://raw.githubusercontent.com/Sengsathit/OCR_data_scientist_ass
 # Couleurs
 green_color = 'mediumseagreen'
 red_color = 'salmon'
+
+# Messages
+message_no_data = 'Aucune information client à afficher.\nVous devez d\'abord vérifier l\'éligibilité d\'un client depuis la page d\'accueil.'
