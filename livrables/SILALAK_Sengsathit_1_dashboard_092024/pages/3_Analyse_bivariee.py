@@ -9,9 +9,31 @@ from utils.constants import *
 # Affichage de l'en-tête de la page
 display_banner(title='Analyse bi-variée')
 
-data_state = get_state_data()
+numerical_features = get_numerical_features()
 
-if data_state:
-    show_info_message(message='OK')
-else:
-    show_error_message(message=message_no_data)
+# Diviser l'interface en deux colonnes
+col1, col2 = st.columns(2)
+
+# Ajouter un selectbox dans la première colonne
+with col1:
+    feature_1 = st.selectbox(
+        'Choisir la première caractéristique :',
+        numerical_features
+    )
+
+# Ajouter un selectbox dans la deuxième colonne
+with col2:
+    feature_2 = st.selectbox(
+        'Choisir la seconde caractéristique :',
+        numerical_features
+    )
+
+plot_scatter_features(feature_name_1=feature_1, feature_name_2=feature_2)
+
+feature_1_description = get_column_description(feature_1)
+feature_2_description = get_column_description(feature_2)
+
+st.header('Description des caractéristiques')
+
+st.write(f"{feature_1} = {feature_1_description}")
+st.write(f"{feature_2} = {feature_2_description}")

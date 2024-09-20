@@ -1,7 +1,8 @@
 import streamlit as st
 
-# Chemin vers le dataset
-df_path = './datasets/df_train_domain.csv'
+# Chemins vers les datasets
+df_train_path = './datasets/df_train_domain.csv'
+df_columns_description_path = './datasets/df_columns_description.csv'
 
 # Url de l'API de scoring
 api_url = 'http://13.38.185.52:5000/scoring'

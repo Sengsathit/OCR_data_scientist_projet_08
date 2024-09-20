@@ -30,21 +30,13 @@ if state_data:
         # Récupération de la colonne correspondante
         selected_feature = next(opt[1] for opt in options if opt[0] == selected_option)
 
-        # Chargement du dataset
-        df = get_dataset()
+        # Tracer l'histogramme
+        plot_hist_feature(client_id=client_id, feature_name=selected_feature)
 
-        # Récupération des valeurs
-        client_value = df.loc[df['SK_ID_CURR'] == client_id, selected_feature].iloc[0]
-        feature_values = df[selected_feature]
+        feature_description = get_column_description(selected_feature)
+        st.header('Description de la caractéristique')
+        st.write(f"{selected_feature} = {feature_description}")
 
-        # Inverser les valeurs pour 'DAYS_EMPLOYED' si nécessaire
-        if selected_feature == 'DAYS_EMPLOYED':
-            client_value *= -1
-            feature_values = feature_values * -1
-
-        # Appel de la fonction pour tracer l'histogramme
-        plot_hist_feature(feature_name=selected_feature, values=feature_values, client_value=client_value)
-        
 
 else:
 

@@ -14,7 +14,7 @@ def display_info_line(feature, value, additional_string=""):
 
 # Fonction pour afficher l'ensemble du contenu de la page informations client
 def display_client_info_content(data):
-    df = get_dataset()
+    df = get_dataset_train()
 
     client = df.query(f"SK_ID_CURR == {data['sk_id_curr']}")
 
