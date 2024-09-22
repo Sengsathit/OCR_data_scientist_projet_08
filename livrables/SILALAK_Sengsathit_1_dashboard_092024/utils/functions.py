@@ -2,10 +2,9 @@ import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
 import matplotlib.pyplot as plt
-from .constants import *
 import pandas as pd
-import numpy as np
 import seaborn as sns
+from utils.constants import *
 
 # Fonction pour récupérer le state data
 def get_state_data():
@@ -80,7 +79,7 @@ def show_error_message(message):
     st.markdown(
         f"""
         <div style="background-color:#ffcccb;padding:10px;border-radius:5px;">
-        <strong style="color:#b30000;">{message.replace('\n', '<br>')}</strong>
+        <strong style="color:#b30000;">{message.replace('html_br', '<br>')}</strong>
         </div>
         """, unsafe_allow_html=True
     )

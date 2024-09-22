@@ -7,3 +7,5 @@ scikit-learn==1.4.0
 plotly==5.19.0
 streamlit==1.38.0
 requests==2.32.3
+pytest==8.3.2
+pytest-mock==3.14.0

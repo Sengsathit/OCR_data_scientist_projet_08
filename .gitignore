@@ -9,5 +9,7 @@ __pycache__/
 *.sqlite
 cours/
 test/
+.pytest_cache/
 
 datasets/df_train_domain.csv
+flipkart
