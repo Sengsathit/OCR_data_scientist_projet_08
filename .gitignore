@@ -13,3 +13,5 @@ test/
 
 datasets/df_train_domain.csv
 flipkart
+train_logs
+train_results
