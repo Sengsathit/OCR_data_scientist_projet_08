@@ -6,6 +6,8 @@ import pandas as pd
 import seaborn as sns
 from utils.constants import *
 
+
+
 # Fonction pour récupérer le state data
 def get_state_data():
     # Initialiser le state s'il n'est pas encoré initialé
@@ -13,17 +15,32 @@ def get_state_data():
         st.session_state['client_data'] = None
     return st.session_state['client_data']
 
+
+
 # Fonction pour récupérer le dataset d'entraînement
 @st.cache_data
 def get_dataset_train():
     df = pd.read_csv(df_train_path)
+
+    # Liste des caractéristiques à convertir en valeurs positives
+    features_to_convert = ['DAYS_EMPLOYED', 'DAYS_REGISTRATION', 'DAYS_LAST_PHONE_CHANGE', 'DAYS_EMPLOYED_PERCENT']
+    
+    # Appliquer la conversion aux colonnes sélectionnées
+    for feature in features_to_convert:
+        if feature in df.columns:
+            df[feature] = df[feature].abs()
+
     return df
+
+
 
 # Fonction pour récupérer le dataset des noms de colonnes
 @st.cache_data
 def get_dataset_columns_description():
     df = pd.read_csv(df_columns_description_path)
     return df
+
+
 
 # Fonction pour afficher la bannière
 def display_banner(title):
@@ -32,6 +49,8 @@ def display_banner(title):
         f"<h1 style='text-align: center; font-size: 48px; margin-bottom: 40px;'>{title}</h1>", 
         unsafe_allow_html=True
     )
+
+
 
 # Fonction pour créer une jauge selon le score du client et le seuil de décision du modèle
 def display_gauge(client_id, value, range_limit):
@@ -53,6 +72,8 @@ def display_gauge(client_id, value, range_limit):
 
     st.plotly_chart(fig)
 
+
+
 # Fonction pour créer un graphique de barres horizontales avec Plotly
 def plot_feature_importance(df, title, color):
     fig = px.bar(df, 
@@ -64,6 +85,8 @@ def plot_feature_importance(df, title, color):
                 color_discrete_sequence=[color])
     return fig
 
+
+
 # Fonction pour afficher un message d'information
 def show_info_message(message):
     st.markdown(
@@ -74,6 +97,8 @@ def show_info_message(message):
         """, unsafe_allow_html=True
     )
 
+
+
 # Fonction pour afficher un message d'erreur
 def show_error_message(message):
     st.markdown(
@@ -83,6 +108,8 @@ def show_error_message(message):
         </div>
         """, unsafe_allow_html=True
     )
+
+
 
 # Fonction pour afficher les feature importances
 def show_feature_importances(df):
@@ -114,6 +141,8 @@ def show_feature_importances(df):
     st.plotly_chart(fig_neg)
     st.plotly_chart(fig_pos)
 
+
+
 # Fonction pour afficher une distribution en fonction d'une feature sélectionnée
 def plot_hist_feature(client_id, feature_name):
     # Chargement du dataset
@@ -123,11 +152,6 @@ def plot_hist_feature(client_id, feature_name):
     client_value = df.loc[df['SK_ID_CURR'] == client_id, feature_name].iloc[0]
     feature_values = df[feature_name]
 
-    # Inverser les valeurs pour 'DAYS_EMPLOYED'
-    if feature_name == 'DAYS_EMPLOYED':
-        client_value *= -1
-        feature_values = feature_values * -1
-
     fig, ax = plt.subplots()
     sns.histplot(feature_values, bins=30, kde=False, ax=ax, edgecolor='white')
     ax.axvline(x=client_value, color='red', linestyle='--', linewidth=1, label=f"valeur du client : {client_value}")
@@ -136,7 +160,9 @@ def plot_hist_feature(client_id, feature_name):
     plt.ylabel('Effectif')
     st.pyplot(fig)
 
-# Fonction pour afficher la dispersion des 
+
+
+# Fonction pour afficher la dispersion des caractéristiques sélectionnées
 def plot_scatter_features(feature_name_1, feature_name_2):
     # Chargement du dataset
     df = get_dataset_train()
@@ -146,11 +172,15 @@ def plot_scatter_features(feature_name_1, feature_name_2):
     plt.title(f"Relation entre {feature_name_1} et {feature_name_2}")
     st.pyplot(fig)
 
+
+
 # Fonction pour récupérer les noms des features numériques
 def get_numerical_features():
     df = get_dataset_train()
     columns = df.select_dtypes(include=['float']).columns
     return columns
+
+
 
 # Fonction pour récupérer la description d'une feature
 def get_column_description(feature_name):

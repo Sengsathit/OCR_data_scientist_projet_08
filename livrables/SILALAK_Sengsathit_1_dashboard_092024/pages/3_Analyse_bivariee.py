@@ -2,10 +2,6 @@ import streamlit as st
 from utils.functions import *
 from utils.constants import *
 
-# FUNCTIONS -----------------------------------------------------------------------------------------------------------------------------
-
-# END_FUNCTIONS -------------------------------------------------------------------------------------------------------------------------
-
 # Affichage de l'en-tête de la page
 display_banner(title='Analyse bi-variée')
 
@@ -28,12 +24,15 @@ with col2:
         numerical_features
     )
 
+# Affichage du graphique
 plot_scatter_features(feature_name_1=feature_1, feature_name_2=feature_2)
 
-feature_1_description = get_column_description(feature_1)
-feature_2_description = get_column_description(feature_2)
-
+# Récupérer puis afficher les descriptions des caractéristiques sélectionnées
 st.header('Description des caractéristiques')
-
-st.write(f"{feature_1} = {feature_1_description}")
-st.write(f"{feature_2} = {feature_2_description}")
+try:
+    feature_1_description = get_column_description(feature_1)
+    feature_2_description = get_column_description(feature_2)
+    st.write(f"{feature_1} = {feature_1_description}")
+    st.write(f"{feature_2} = {feature_2_description}")
+except:
+    show_error_message(message=message_no_data_error)

@@ -3,8 +3,6 @@ import pandas as pd
 from utils.functions import *
 from utils.constants import *
 
-# FUNCTIONS -----------------------------------------------------------------------------------------------------------------------------
-
 # Fonction pour afficher une ligne d'information à propos du client
 def display_info_line(feature, value, additional_string=""):
     st.markdown(f"""
@@ -21,14 +19,14 @@ def display_client_info_content(data):
     client_id = client['SK_ID_CURR'].values[0]
     display_info_line(feature='Numéro client', value=client_id)
 
-    age = round(client['DAYS_BIRTH'].values[0] / 365)
+    age = abs(round(client['DAYS_BIRTH'].values[0] / 365))
     display_info_line(feature='Age', value=age, additional_string='ans')
 
     isWoman = client['CODE_GENDER_F'].values[0]
     display_info_line(feature='Sexe', value="Femme" if isWoman else "Homme")
 
     days_employed = client['DAYS_EMPLOYED'].values[0]
-    work_experience = round(days_employed / -365) if pd.notna(days_employed) else 'NC'
+    work_experience = abs(round(days_employed / 365)) if pd.notna(days_employed) else 'NC'
     additional_string = 'année(s)' if pd.notna(days_employed) else ""
     display_info_line(feature='Expérience professionnelle', value=work_experience, additional_string=additional_string)
 
@@ -48,13 +46,15 @@ def display_client_info_content(data):
     additional_string = '$' if pd.notna(amt_credit) else None
     display_info_line(feature='Crédit en cours', value=credit, additional_string=additional_string)
 
-# END_FUNCTIONS -------------------------------------------------------------------------------------------------------------------------
+
 
 # Affichage de l'en-tête de la page
 display_banner(title='Informations client')
 
+# Chargement des données du client
 state_data = get_state_data()
 
+# Afficher les informations du client si elles existent
 if state_data:
     display_client_info_content(data=state_data)
 else:

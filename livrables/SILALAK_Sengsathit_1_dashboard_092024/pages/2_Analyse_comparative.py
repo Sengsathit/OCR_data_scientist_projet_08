@@ -5,8 +5,10 @@ from utils.constants import *
 # Affichage de l'en-tête de la page
 display_banner(title='Analyse comparative')
 
+# Chargement des données du client
 state_data = get_state_data()
 
+# Afficher les données comparatives du client si elles existent
 if state_data:
     
     client_id = state_data['sk_id_curr']
@@ -33,9 +35,13 @@ if state_data:
         # Tracer l'histogramme
         plot_hist_feature(client_id=client_id, feature_name=selected_feature)
 
-        feature_description = get_column_description(selected_feature)
-        st.header('Description de la caractéristique')
-        st.write(f"{selected_feature} = {feature_description}")
+        # Récupérer puis afficher les descriptions des caractéristiques sélectionnées
+        st.header('Description des caractéristiques')
+        try:
+            feature_description = get_column_description(selected_feature)
+            st.write(f"{selected_feature} = {feature_description}")
+        except:
+            show_error_message(message=message_no_data_error)
 
 
 else:

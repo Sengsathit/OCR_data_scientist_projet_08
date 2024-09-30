@@ -4,9 +4,7 @@ import streamlit as st
 from utils.functions import *
 from utils.constants import *
 
-# FUNCTIONS -----------------------------------------------------------------------------------------------------------------------------
-
-# Affichage de l'interface en fonction des données récupérées
+# Fonction pour l'affichage de l'interface en fonction des données récupérées
 def display_home_page_content(data):
     if data:
         client_id = data['sk_id_curr']
@@ -27,7 +25,6 @@ def display_home_page_content(data):
         # Explication des features
         show_feature_importances(df=data)
 
-# END_FUNCTIONS -------------------------------------------------------------------------------------------------------------------------
 
 # Configuration de la page
 st.set_page_config(layout='centered')
@@ -35,6 +32,7 @@ st.set_page_config(layout='centered')
 # Affichage de l'en-tête de la page
 display_banner(title='Évaluation du risque de crédit')
 
+# Chargement des données du client
 state_data = get_state_data()
 
 # Champ de saisie pour le numéro de client
@@ -72,6 +70,6 @@ if st.button("Vérifier le risque"):
     else:
         st.warning("Veuillez saisir un numéro de client.")
 
-# Appeler la fonction d'affichage si des données sont présentes
+# Appeler la fonction d'affichage si des données de client existent
 if state_data:
     display_home_page_content(data=state_data)
